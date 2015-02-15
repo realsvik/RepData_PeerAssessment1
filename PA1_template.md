@@ -95,7 +95,7 @@ intnums<-c(1:nrow(DailyAct))
 DailyAct[,"intnum"] <- intnums
 ```
 
-This plot shows number of steps, taken each interval.
+Following plot shows average number of steps, taken each interval.
 
 
 ```r
@@ -104,7 +104,7 @@ par(mar=c(4,4,4,4))
 plot(DailyAct$AvSteps, xaxt="n", 
       type="l",  
       xlab="Interval", ylab = "Steps",  
-      main="Number of steps per interval", cex.main=0.8, col.main="blue")
+      main="Average number of steps per interval", cex.main=0.8, col.main="blue")
  
  axis(1, xlim=c(0, nrow(DailyAct)), at=seq(0,nrow(DailyAct),by=5))
 ```
@@ -120,7 +120,7 @@ max(DailyAct$AvSteps)
 ## [1] 206.1698
 ```
 
-is in interval 
+is in interval #
 
 ```r
 DailyAct$intnum[DailyAct$AvSteps==max(DailyAct$AvSteps)]
@@ -129,6 +129,7 @@ DailyAct$intnum[DailyAct$AvSteps==max(DailyAct$AvSteps)]
 ```
 ## [1] 104
 ```
+
 
 ####Imputing missing values
 
@@ -212,7 +213,7 @@ barplot(StepsSummary$TotalNumberSteps,
          cex.axis=.5, cex.names=.5, cex.lab=0.7, 
          las=2, 
          names.arg=StepsSummary$date, 
-         main="Number of steps per day", cex.main=0.8, col.main="blue")
+         main="Total number of steps per day", cex.main=0.8, col.main="blue")
 ```
 
 ![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
