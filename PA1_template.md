@@ -18,21 +18,20 @@ I am going to
 
 First, I load the data from activity.csv file,located in the same folder wiith this script
 
-```{r}
-DailySteps <- read.csv("activity.csv", na.strings = "NA")
 
+```r
+DailySteps <- read.csv("activity.csv", na.strings = "NA")
 ```
 
 #### Mean values investigation
 I will use dplyr package to check mean summaries
-```{r echo=FALSE}
-library(dplyr)
-```
+
 
 First, I create dataframe StepsSummary, which contains total number of steps per day
 
 
-```{r echo=TRUE}
+
+```r
 StepsSummary <- DailySteps %>%
     group_by(date) %>%
     summarise(sum(steps)) %>%
@@ -42,7 +41,8 @@ names(StepsSummary)<-c("date","TotalNumberSteps")
 
 This plot shows number of steps, taken each day.
 
-```{r echo=TRUE, fig.width=10, fig.height=5}
+
+```r
 barplot(StepsSummary$TotalNumberSteps, 
          space=2, 
          xlab="Days", ylab = "Steps", 
@@ -52,18 +52,31 @@ barplot(StepsSummary$TotalNumberSteps,
          main="Number of steps per day", cex.main=0.8, col.main="blue")
 ```
 
+![plot of chunk unnamed-chunk-4](figure/unnamed-chunk-4-1.png) 
+
 Mean for steps, taken per day, is 
-```{r echo=TRUE}
+
+```r
 mean(StepsSummary$TotalNumberSteps,na.rm=TRUE)
+```
+
+```
+## [1] 10766.19
 ```
 
 
 Median for steps, taken per day, is 
-```{r echo=TRUE}
+
+```r
 median(StepsSummary$TotalNumberSteps,na.rm=TRUE)
 ```
+
+```
+## [1] 10765
+```
 I remove StepsSummary dataframe in order to free memory
-```{r}
+
+```r
 rm(StepsSummary)
 ```
 
@@ -71,8 +84,8 @@ rm(StepsSummary)
 
 First, I create dataframe DailyAct, which contains summary of steps per interval
 
-```{r}
 
+```r
 DailyAct<-DailySteps %>%
 group_by(interval) %>%
 summarise(mean(steps, na.rm=TRUE)) %>%
@@ -80,12 +93,12 @@ as.data.frame()
 names(DailyAct)<-c("interval","AvSteps")
 intnums<-c(1:nrow(DailyAct))
 DailyAct[,"intnum"] <- intnums
-
 ```
 
 This plot shows number of steps, taken each interval.
 
-```{r echo=TRUE, fig.width=10, fig.height=5}
+
+```r
 par(mar=c(4,4,4,4))
 
 plot(DailyAct$AvSteps, xaxt="n", 
@@ -95,14 +108,26 @@ plot(DailyAct$AvSteps, xaxt="n",
  
  axis(1, xlim=c(0, nrow(DailyAct)), at=seq(0,nrow(DailyAct),by=5))
 ```
+
+![plot of chunk unnamed-chunk-9](figure/unnamed-chunk-9-1.png) 
 Maximum number of steps 
-```{r echo=TRUE}
+
+```r
 max(DailyAct$AvSteps) 
 ```
 
+```
+## [1] 206.1698
+```
+
 is in interval 
-```{r echo=TRUE}
+
+```r
 DailyAct$intnum[DailyAct$AvSteps==max(DailyAct$AvSteps)]
+```
+
+```
+## [1] 104
 ```
 
 ####Imputing missing values
@@ -113,14 +138,24 @@ In this section I am going to replace missing numbers of steps with mean values 
 
 First,lets see how many rows with missing data there is in data set:
 
-```{r echo=TRUE}
+
+```r
 nrow(DailySteps)-nrow(na.omit(DailySteps))
+```
+
+```
+## [1] 2304
 ```
 
 Lets have a look at how many rows missing number of steps.
 
-```{r echo=TRUE}
+
+```r
 nrow(DailySteps[is.na(DailySteps$steps)==TRUE,])
+```
+
+```
+## [1] 2304
 ```
 #####Fill in the missing data
 
@@ -139,7 +174,8 @@ To achieve this, I will:
 - Unite the dataframe with original date with the dataframe, containing estimated data
 
 
-```{r echo=TRUE}
+
+```r
 #steps with NA values
 NADailySteps <- DailySteps[is.na(DailySteps$steps)==TRUE,]
 #Dataframe with known steps number
@@ -158,17 +194,18 @@ rm(NADailySteps)
 Data transformation and call to draw a histogram of the total number of steps taken each day are same, as in the first section of this doucment.
 The only difference is that I use FullDailySteps with replaced NA values.
 
-```{r echo=TRUE}
+
+```r
 StepsSummary <- FullDailySteps %>%
     group_by(date) %>%
     summarise(sum(steps)) %>%
     as.data.frame()
 names(StepsSummary)<-c("date","TotalNumberSteps")
-
 ```
 There are no more missing bars in the plot with replaced NA's:
 
-```{r echo=TRUE, fig.width=10, fig.height=5}
+
+```r
 barplot(StepsSummary$TotalNumberSteps, 
          space=2, 
          xlab="Days", ylab = "Steps", 
@@ -178,15 +215,27 @@ barplot(StepsSummary$TotalNumberSteps,
          main="Number of steps per day", cex.main=0.8, col.main="blue")
 ```
 
+![plot of chunk unnamed-chunk-16](figure/unnamed-chunk-16-1.png) 
+
 Mean for steps, taken per day, did not change significantly, and equals: 
-```{r echo=TRUE}
+
+```r
 mean(StepsSummary$TotalNumberSteps,na.rm=TRUE)
+```
+
+```
+## [1] 10766.19
 ```
 
 
 Median for steps, taken per day, increased by 1 step: 
-```{r echo=TRUE}
+
+```r
 median(StepsSummary$TotalNumberSteps,na.rm=TRUE)
+```
+
+```
+## [1] 10766.19
 ```
 
 As a conclusion, replacing missing values with mean values provided data for the days, for which data was not available at all.
@@ -198,12 +247,19 @@ In the final part of research I am going to look for differences in moves on wee
 
 The following code adds column "weekd"" to dataframe FullDailySteps.
 "weekd" can have 2 values, "weekday" or "weekend"
-```{r}
+
+```r
 Sys.setlocale("LC_TIME", "English")
+```
+
+```
+## [1] "English_United States.1252"
+```
+
+```r
 FullDailySteps <- mutate(FullDailySteps, weekd=weekdays(strptime(date, "%Y-%m-%d")))
 FullDailySteps <- mutate(FullDailySteps, weekd=ifelse(weekd %in% c('Saturday','Sunday'), 'Weekend', 'Weekday'))
 FullDailySteps <- mutate(FullDailySteps, weekd=factor(weekd, levels=c('Weekday', 'Weekend')))
-
 ```
 
 This plot shows daily activity between on weekdays and weekends.
@@ -211,9 +267,11 @@ It shows, that more activity is started early in the day on weekdays.
 On weekends, the subject of observation starts walking actively later.
 
 
-```{r echo=TRUE, fig.width=10}
+
+```r
 library(ggplot2)
 qplot(interval, steps, data=FullDailySteps, geom="line", xlab="Minutes, 5 minute intervals", ylab="Steps", facets=weekd ~.)
-
 ```
+
+![plot of chunk unnamed-chunk-20](figure/unnamed-chunk-20-1.png) 
 
